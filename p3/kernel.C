@@ -100,7 +100,7 @@ int main() {
     } pagefault_handler;
 
     ExceptionHandler::register_handler(14, &pagefault_handler);
-    
+
     /* ---- INITIALIZE THE PAGE TABLE -- */
 
     PageTable::init_paging(&kernel_mem_pool,
@@ -109,12 +109,51 @@ int main() {
 
     PageTable pt;
 
+    //TODO
+    //access the first 4MB memory
+    int *first = (int *) (FAULT_ADDR - 1);
+    *first = 1;
+    if((*first) == 1)
+        Console::puts("Pass\n");
+    else
+        Console::puts("Failed\n");
+
     pt.load();
+    //TODO
+    //test if the page directory is loaded
+    //can we access the page directory?
+    //can we access the first page table?
+    int *page_dir_addr = read_cr3();
+    int page_dir_1 = page_dir_addr[0];
+    if(page_dir_1 == 0x00000002)
+        Console::puts("Failed\n");
+    else
+        Console::puts("Pass\n");
+
+    int page_tb_1 = *page_dir_1;
+    if(page_tb_1 == 0x00000002)
+        Console::puts("Failed\n");
+    else
+        Console::puts("Pass\n");
 
     PageTable::enable_paging();
+    //TODO
+    //test if the page enabling bit in CR0 is set
+    //memory beyond first 4MB not present?
+    int cr0 = read_cr0();
+    if((cr0 >> 31) == 1)
+        Console::puts("Pass\n");
+    else
+        Console::puts("Failed\n");
+
+    if(page_dir_addr[1] == 0x00000002)
+        Console::puts("Pass\n");
+    else
+        Console::puts("Failed\n");
+
 
     /* -- INITIALIZE THE TIMER (we use a very simple timer).-- */
-    
+
     SimpleTimer timer(100); /* timer ticks every 10ms. */
     InterruptHandler::register_handler(0, &timer);
 
@@ -151,6 +190,25 @@ int main() {
     if(i == NACCESS) {
        Console::puts("TEST PASSED\n");
     }
+
+    //TODO
+    //access out of boundary memory, temporarily not tested, waiting to a
+    //uniform standard
+
+    //access already present mem
+    //access not present mem
+    //access just present mem
+    //int *out_bound = (int *) (32 MB);
+
+    if(foo[NACCESS - 1] == (NACCESS - 1))
+       Console::puts("PASSED\n");
+    else
+       Console::puts("FAILED\n");
+
+    if(foo[5] == 5)
+       Console::puts("PASSED\n");
+    else
+       Console::puts("FAILED\n");
 
     /* -- NOW LOOP FOREVER */
     for(;;);
