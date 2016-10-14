@@ -82,11 +82,13 @@ int main() {
     //TODO
     //test get
     int pass = 0;
+    int naive_pass = 0;
     Console::puts("===================Kernel Mem Pool Test===============\n");
-    ///////////////////
+    //
     Console::puts("Direct Release:\t");
     if(kernel_mem_pool.release_frame(1) == ERROR){
         Console::puts("Pass\n");
+        naive_pass++;
         pass++;
     }
     else
@@ -95,6 +97,27 @@ int main() {
     Console::puts("Mark Inaccessible:\t");
     if(kernel_mem_pool.mark_inaccessible(555, 22) != ERROR){
         Console::puts("Pass\n");
+        pass++;
+        naive_pass++;
+    }
+    else
+        Console::puts("Failed\n");
+    //get a single frame
+    Console::puts("Get A Frame:\t");
+    int singleFrame = 0;
+    singleFrame = kernel_mem_pool.get_frame();
+    if(singleFrame != ERROR){
+        Console::puts("Pass\n");
+        naive_pass++;
+        pass++;
+    }
+    else
+        Console::puts("Failed\n");
+    //release a single frame
+    Console::puts("Release A Frame:\t");
+    if(kernel_mem_pool.release_frame(singleFrame) != ERROR){
+        Console::puts("Pass\n");
+        naive_pass++;
         pass++;
     }
     else
@@ -181,6 +204,7 @@ int main() {
     if(kernel_mem_pool.release_frame(556) == ERROR){
         Console::puts("Pass\n");
         pass++;
+        naive_pass++;
     }
     else
         Console::puts("Failed\n");
@@ -195,6 +219,7 @@ int main() {
     if(process_mem_pool.release_frame(PROCESS_POOL_START_FRAME) == ERROR){
         Console::puts("Pass\n");
         pass++;
+        naive_pass++;
     }
     else
         Console::puts("Failed\n");
@@ -202,6 +227,27 @@ int main() {
     Console::puts("Mark Inaccessible:\t");
     if(process_mem_pool.mark_inaccessible(PROCESS_POOL_START_FRAME + 555, 22) != ERROR){
         Console::puts("Pass\n");
+        pass++;
+        naive_pass++;
+    }
+    else
+        Console::puts("Failed\n");
+    //get a single frame
+    Console::puts("Get A Frame:\t");
+    singleFrame = 0;
+    singleFrame = process_mem_pool.get_frame();
+    if(singleFrame != ERROR){
+        Console::puts("Pass\n");
+        naive_pass++;
+        pass++;
+    }
+    else
+        Console::puts("Failed\n");
+    //release a single frame
+    Console::puts("Release A Frame:\t");
+    if(process_mem_pool.release_frame(singleFrame) != ERROR){
+        Console::puts("Pass\n");
+        naive_pass++;
         pass++;
     }
     else
@@ -290,13 +336,20 @@ int main() {
     if(kernel_mem_pool.release_frame(MEM_HOLE_START_FRAME) == ERROR){
         Console::puts("Pass\n");
         pass++;
+        naive_pass++;
     }
     else
         Console::puts("Failed\n");
 
     Console::puts("Total Pass:\t");
     Console::puti(pass);
-    Console::puts("/20\n");
+    Console::puts("/24\n");
+    Console::puts("Naive Pass:\t");
+    Console::puti(naive_pass);
+    Console::puts("/10\n");
+    Console::puts("Corner Pass:\t");
+    Console::puti((pass-naive_pass));
+    Console::puts("/14\n");
 
 
     for(;;);
