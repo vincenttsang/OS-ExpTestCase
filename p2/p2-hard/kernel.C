@@ -105,16 +105,17 @@ int main() {
     for(int i = KERNEL_POOL_START_FRAME; i < KERNEL_POOL_START_FRAME +
         KERNEL_POOL_SIZE; i++) // allocate it all again
     {
-        if(kernel_mem_pool.get_frame() == ERROR)
+        if(kernel_mem_pool.get_frame() == ERROR){
             ++failed;
+        }
     }
     if(failed == 22){
         Console::puts("Pass\n");
         pass++;
     }
     else{
-        Console::puti(failed);
-        Console::puts(" Failure\n");
+        Console::puti(failed - 22);
+        Console::puts(" Failure Besides Inaccessible Frames\n");
     }
     //
     Console::puts("Get A Frame:\t");
@@ -164,16 +165,15 @@ int main() {
     {
         if(kernel_mem_pool.release_frame(i) == ERROR)
         {
-            if(i < 555 || i >576)
                 failed++;
         }
     }
-    if(failed == 0){
+    if(failed == 22){
         Console::puts("Pass\n");
         pass++;
     }
     else{
-        Console::puti(failed);
+        Console::puti(failed - 22);
         Console::puts(" Failure Besides Inaccessible\n");
     }
     //release inaccessible
@@ -185,9 +185,118 @@ int main() {
     else
         Console::puts("Failed\n");
 
+    //Console::puts("Total Pass:\t");
+    //Console::puti(pass);
+    //Console::puts("/10\n");
+
+    Console::puts("===================Process Mem Pool Test===============\n");
+    ///////////////////
+    Console::puts("Direct Release:\t");
+    if(process_mem_pool.release_frame(PROCESS_POOL_START_FRAME) == ERROR){
+        Console::puts("Pass\n");
+        pass++;
+    }
+    else
+        Console::puts("Failed\n");
+    /////////////////
+    Console::puts("Mark Inaccessible:\t");
+    if(process_mem_pool.mark_inaccessible(PROCESS_POOL_START_FRAME + 555, 22) != ERROR){
+        Console::puts("Pass\n");
+        pass++;
+    }
+    else
+        Console::puts("Failed\n");
+    /////////////////
+    Console::puts("Get All Frame:\t");
+    failed = 0;
+    for(int i = PROCESS_POOL_START_FRAME; i < PROCESS_POOL_START_FRAME +
+        PROCESS_POOL_SIZE; i++) // allocate it all again
+    {
+        if(process_mem_pool.get_frame() == ERROR)
+            ++failed;
+    }
+    int process_inac = 22 + MEM_HOLE_SIZE;
+    int boundary = PROCESS_POOL_START_FRAME +
+        PROCESS_POOL_SIZE - 1;
+    if(failed == process_inac){
+        Console::puts("Pass\n");
+        pass++;
+    }
+    else{
+        Console::puti(failed - process_inac);
+        Console::puts(" Failure Besides Inaccessible\n");
+    }
+    //
+    Console::puts("Get A Frame:\t");
+    if(process_mem_pool.get_frame() == ERROR){
+        Console::puts("Pass\n");
+        pass++;
+    }
+    else
+        Console::puts("Failed\n");
+    //
+    Console::puts("Out Boundary Release\t");
+    if(process_mem_pool.release_frame(boundary+1) == ERROR){
+        Console::puts("Pass\n");
+        pass++;
+    }
+    else
+        Console::puts("Failed\n");
+    //release
+    Console::puts("Boundary Release\t");
+    if(process_mem_pool.release_frame(boundary) != ERROR){
+        Console::puts("Pass\n");
+        pass++;
+    }
+    else
+        Console::puts("Failed\n");
+    //
+    Console::puts("Multi Release\t");
+    if(process_mem_pool.release_frame(boundary) == ERROR){
+        Console::puts("Pass\n");
+        pass++;
+    }
+    else
+        Console::puts("Failed\n");
+    //get just released frame
+    Console::puts("Get Just Released\t");
+    if(process_mem_pool.get_frame() == boundary){
+        Console::puts("Pass\n");
+        pass++;
+    }
+    else
+        Console::puts("Failed\n");
+    //release all frames
+    Console::puts("Release All\t");
+    failed = 0;
+    for(int i = PROCESS_POOL_START_FRAME; i < PROCESS_POOL_START_FRAME +
+        PROCESS_POOL_SIZE; i++) // allocate it all again
+    {
+        if(process_mem_pool.release_frame(i) == ERROR)
+        {
+            failed++;
+        }
+    }
+    if(failed == process_inac){
+        Console::puts("Pass\n");
+        pass++;
+    }
+    else{
+        Console::puti(failed - process_inac);
+        Console::puts(" Failure Besides Inaccessible\n");
+    }
+    //release inaccessible
+    Console::puts("Release Inaccessible\t");
+    if(kernel_mem_pool.release_frame(MEM_HOLE_START_FRAME) == ERROR){
+        Console::puts("Pass\n");
+        pass++;
+    }
+    else
+        Console::puts("Failed\n");
+
     Console::puts("Total Pass:\t");
     Console::puti(pass);
-    Console::puts("/10\n");
+    Console::puts("/20\n");
 
 
     for(;;);
