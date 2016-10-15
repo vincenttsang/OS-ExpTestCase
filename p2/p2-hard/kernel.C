@@ -341,16 +341,48 @@ int main() {
     else
         Console::puts("Failed\n");
 
+    int corner_pass = pass - naive_pass;
     Console::puts("Total Pass:\t");
     Console::puti(pass);
-    Console::puts("/24\n");
+    Console::puts("/24\t");
     Console::puts("Naive Pass:\t");
     Console::puti(naive_pass);
-    Console::puts("/10\n");
+    Console::puts("/10\t");
     Console::puts("Corner Pass:\t");
-    Console::puti((pass-naive_pass));
-    Console::puts("/14\n");
+    Console::puti((corner_pass));
+    Console::puts("/14\t");
 
+    //Recommended Scores
+    int score1 = 0;
+    if(pass > 12)
+        score1 = 25;
+    else if(pass = 12)
+        score1 = 24;
+    else
+        score1 = 24 - (12 - pass) * 2;
+    Console::puts("\nNaive Case:\t");
+    Console::puti((int)score1);
+
+    score1 = 25 - ((10 - naive_pass)*2);
+    Console::puts("\tFunction Correct:\t");
+    Console::puti(score1);
+
+    if(pass = 14)
+        score1 = 10;
+    else if(pass >= 12)
+        score1 = 9;
+    else if(pass >= 10)
+        score1 = 7;
+    else if(pass >= 7)
+        score1 = 6;
+    else if(pass >= 4)
+        score1 = 5;
+    else if(pass >= 2)
+        score1 = 3;
+    else
+        score1 = 0;
+    Console::puts("\tCorner:\t");
+    Console::puti(score1);
 
     for(;;);
 
