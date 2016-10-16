@@ -111,6 +111,7 @@ int main() {
 
     //TODO
     //access the first 4MB memory
+    Console::puts("1. Access 1st 4MB:\t");
     int *first = (int *) (FAULT_ADDR - 1);
     *first = 1;
     if((*first) == 1)
@@ -123,30 +124,35 @@ int main() {
     //test if the page directory is loaded
     //can we access the page directory?
     //can we access the first page table?
-    int *page_dir_addr = read_cr3();
-    int page_dir_1 = page_dir_addr[0];
-    if(page_dir_1 == 0x00000002)
-        Console::puts("Failed\n");
-    else
+    Console::puts("2. Access 1st page directory:\t");
+    unsigned long *page_dir_addr = (unsigned long*)read_cr3();
+    unsigned long page_dir_1 = page_dir_addr[0];
+    if(page_dir_1 & 3 == 0x00000003)
         Console::puts("Pass\n");
+    else
+        Console::puts("Failed\n");
 
-    int page_tb_1 = *page_dir_1;
-    if(page_tb_1 == 0x00000002)
-        Console::puts("Failed\n");
-    else
+    Console::puts("3. Access 1st page table:\t");
+    unsigned long *page_tb_addr = (unsigned long*) page_dir_1;
+    unsigned long page_tb_1 = page_tb_addr[0];
+    if(page_tb_1 & 3 == 0x00000003)
         Console::puts("Pass\n");
+    else
+        Console::puts("Failed\n");
 
     PageTable::enable_paging();
     //TODO
     //test if the page enabling bit in CR0 is set
     //memory beyond first 4MB not present?
-    int cr0 = read_cr0();
+    Console::puts("4. Access Page Enable Bit:\t");
+    unsigned long cr0 = read_cr0();
     if((cr0 >> 31) == 1)
         Console::puts("Pass\n");
     else
         Console::puts("Failed\n");
 
-    if(page_dir_addr[1] == 0x00000002)
+    Console::puts("5. Access Beyond 4MB:\t");
+    if(page_dir_addr[1] & 2 == 0x00000002)
         Console::puts("Pass\n");
     else
         Console::puts("Failed\n");
@@ -173,6 +179,8 @@ int main() {
     /* -- GENERATE MEMORY REFERENCES */
 
     int *foo = (int *) FAULT_ADDR;
+    foo[NACCESS-1] = NACCESS - 1;
+    foo[5] = 5;
     int i;
 
     for (i=0; i<NACCESS; i++) {
@@ -187,28 +195,21 @@ int main() {
           break;
        }
     }
+    Console::puts("6. Contiguous Access: \t");
     if(i == NACCESS) {
-       Console::puts("TEST PASSED\n");
+       Console::puts("PASSED\n");
     }
+    else
+       Console::puts("FAILED\n");
 
     //TODO
     //access out of boundary memory, temporarily not tested, waiting to a
     //uniform standard
 
-    //access already present mem
     //access not present mem
-    //access just present mem
+    //Console::puts("6. Access out of bound:\t");
     //int *out_bound = (int *) (32 MB);
 
-    if(foo[NACCESS - 1] == (NACCESS - 1))
-       Console::puts("PASSED\n");
-    else
-       Console::puts("FAILED\n");
-
-    if(foo[5] == 5)
-       Console::puts("PASSED\n");
-    else
-       Console::puts("FAILED\n");
 
     /* -- NOW LOOP FOREVER */
     for(;;);

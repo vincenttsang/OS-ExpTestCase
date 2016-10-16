@@ -166,7 +166,7 @@ int main() {
         Console::puts("Failed\n");
     //
     Console::puts("Multi Release\t");
-    if(kernel_mem_pool.release_frame(1023) == ERROR){
+    if(kernel_mem_pool.release_frame(1023) != ERROR){
         Console::puts("Pass\n");
         pass++;
     }
@@ -298,7 +298,7 @@ int main() {
         Console::puts("Failed\n");
     //
     Console::puts("Multi Release\t");
-    if(process_mem_pool.release_frame(boundary) == ERROR){
+    if(process_mem_pool.release_frame(boundary) != ERROR){
         Console::puts("Pass\n");
         pass++;
     }
@@ -356,28 +356,31 @@ int main() {
     int score1 = 0;
     if(pass > 12)
         score1 = 25;
-    else if(pass = 12)
+    else if(pass == 12)
         score1 = 24;
     else
         score1 = 24 - (12 - pass) * 2;
     Console::puts("\nNaive Case:\t");
     Console::puti((int)score1);
 
+    score1 = -1;
     score1 = 25 - ((10 - naive_pass)*2);
     Console::puts("\tFunction Correct:\t");
     Console::puti(score1);
 
-    if(pass = 14)
+    score1 = -1;
+    if(corner_pass == 14){
         score1 = 10;
-    else if(pass >= 12)
+    }
+    else if(corner_pass >= 12)
         score1 = 9;
-    else if(pass >= 10)
+    else if(corner_pass >= 10)
         score1 = 7;
-    else if(pass >= 7)
+    else if(corner_pass >= 7)
         score1 = 6;
-    else if(pass >= 4)
+    else if(corner_pass >= 4)
         score1 = 5;
-    else if(pass >= 2)
+    else if(corner_pass >= 2)
         score1 = 3;
     else
         score1 = 0;
