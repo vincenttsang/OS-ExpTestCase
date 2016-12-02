@@ -1,7 +1,7 @@
 /*
     File: page_table.H
 
-    Author: R. Bettati, Nikhil Gupta
+    Author: R. Bettati
             Department of Computer Science
             Texas A&M University
     Date  : 10/03/25
@@ -23,10 +23,12 @@
 /* INCLUDES */
 /*--------------------------------------------------------------------------*/
 
+
 #include "exceptions.H"
 #include "frame_pool.H"
+#include "console.H"
+#include "paging_low.H"
 #include "vm_pool.H"
-
 /*--------------------------------------------------------------------------*/
 /* FORWARDS */
 /*--------------------------------------------------------------------------*/
@@ -36,7 +38,7 @@
 /*--------------------------------------------------------------------------*/
 /* P A G E - T A B L E  */
 /*--------------------------------------------------------------------------*/
-
+#define vm_pool_size 5
 class PageTable {
 
 private:
@@ -50,6 +52,9 @@ private:
 
   /* DATA FOR CURRENT PAGE TABLE */
   unsigned long        * page_directory;     /* where is page directory located? */
+  unsigned long        * page_table;        /*where is page table located ?*/
+
+  VMPool	       *vm_pool_array[vm_pool_size];
 
 public:
   static const unsigned int PAGE_SIZE        = Machine::PAGE_SIZE; /* in bytes */
@@ -73,6 +78,9 @@ public:
   /* Makes the given page table the current table. This must be done once during
      system startup and whenever the address space is switched (e.g. during
      process switching). */
+  void register_vmpool(VMPool *_pool); // register the the virtual memory pool 
+
+  void free_page(unsigned long _page_no);
 
   static void enable_paging();
   /* Enable paging on the CPU. Typically, a CPU start with paging disabled, and
@@ -81,14 +89,6 @@ public:
 
   static void handle_fault(REGS * _r);
   /* The page fault handler. */
-
-  void free_page(unsigned long _page_no);
-  /* Release the frame associated with the page _page_no */
-
-  void register_vmpool(VMPool *_pool);
-  /* The page table needs to know about where it gets its pages from.
-     For this, we have VMPools register with the page table. */
-
 };
 
 #endif

@@ -1,5 +1,6 @@
 CPP = gcc
-CPP_OPTIONS = -nostdlib -fno-builtin -nostartfiles -nodefaultlibs -fno-exceptions -fno-rtti -fno-stack-protector -fleading-underscore -m32
+
+CPP_OPTIONS = -nostdlib -fno-builtin -nostartfiles -nodefaultlibs -fno-exceptions -fno-rtti -fno-stack-protector -fleading-underscore -m32 -fno-asynchronous-unwind-tables
 
 all: kernel.bin
 
@@ -59,10 +60,10 @@ paging_low.o: paging_low.asm paging_low.H
 
 page_table.o: page_table.C page_table.H paging_low.H
 	$(CPP) $(CPP_OPTIONS) -c -o page_table.o page_table.C
-	
+
 frame_pool.o: frame_pool.C frame_pool.H
 	$(CPP) $(CPP_OPTIONS) -c -o frame_pool.o frame_pool.C
-	
+
 vm_pool.o: vm_pool.C vm_pool.H
 	$(CPP) $(CPP_OPTIONS) -c -o vm_pool.o vm_pool.C
 

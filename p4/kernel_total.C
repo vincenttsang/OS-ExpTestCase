@@ -189,6 +189,32 @@ int main() {
     Console::puts("Hello World!\n");
 
     /* -- GENERATE MEMORY REFERENCES */
+    //paging test
+    int *foo = (int *) FAULT_ADDR;
+    foo[NACCESS-1] = NACCESS - 1;
+    foo[5] = 5;
+    int i;
+
+    Console::puts("Starting Contiguous Access:\n");
+    for (i=0; i<NACCESS; i++) {
+       foo[i] = i;
+    }
+    Console::puts("Passing Write Phase\n");
+    for (i=0; i<NACCESS; i++) {
+       if(foo[i] != i) {
+          Console::puts("TEST FAILED for access number:");
+          Console::putui(i);
+          Console::puts("\n");
+          break;
+       }
+    }
+    Console::puts("===================6. Contiguous Access: \t");
+    if(i == NACCESS) {
+       Console::puts("PASSED\n");
+    }
+    else
+       Console::puts("FAILED\n");
+
     //VM Pool test
 
     Console::puts("I am starting with an extensive test of the memory allocator.\n");

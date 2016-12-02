@@ -151,11 +151,11 @@ int main() {
     else
         Console::puts("Failed\n");
 
-    //Console::puts("5. Access Beyond 4MB:\t");
-    //if((page_dir_addr[1] & 2) == 0x00000002)
-    //    Console::puts("Pass\n");
-    //else
-    //    Console::puts("Failed\n");
+    Console::puts("5. Access Beyond 4MB:\t");
+    if((page_dir_addr[1] & 2) == 0x00000002)
+        Console::puts("Pass\n");
+    else
+        Console::puts("Failed\n");
 
 
     /* -- INITIALIZE THE TIMER (we use a very simple timer).-- */
@@ -183,11 +183,10 @@ int main() {
     foo[5] = 5;
     int i;
 
-    Console::puts("Starting Contiguous Access:\n");
     for (i=0; i<NACCESS; i++) {
        foo[i] = i;
     }
-    Console::puts("Passing Write Phase\n");
+
     for (i=0; i<NACCESS; i++) {
        if(foo[i] != i) {
           Console::puts("TEST FAILED for access number:");

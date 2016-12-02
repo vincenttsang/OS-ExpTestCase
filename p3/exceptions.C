@@ -1,4 +1,4 @@
-/* 
+/*
     File: exceptions.C
 
     Author: R. Bettati
@@ -7,7 +7,7 @@
     Date  : 12/09/05
 
 */
- 
+
 /*--------------------------------------------------------------------------*/
 /* DEFINES */
 /*--------------------------------------------------------------------------*/
@@ -30,7 +30,7 @@
 
 /* The low-level functions (defined in file 'IDT::low.s') that handle the
    32 Intel-defined CPU exceptions.
-   These functions are actually merely stubs that put the error code and 
+   These functions are actually merely stubs that put the error code and
    the exception code on the stack and then call a low-level function, which
    in turn calls the exception dispatcher (defined in 'exceptions.H').
    Yes, there are more efficient ways to handle exceptions, but they require more
@@ -78,7 +78,7 @@ extern "C" void lowlevel_dispatch_exception(REGS * _r) {
 /*--------------------------------------------------------------------------*/
 
 ExceptionHandler * ExceptionHandler::handler_table[ExceptionHandler::EXCEPTION_TABLE_SIZE];
-  
+
 /*--------------------------------------------------------------------------*/
 /* EXPORTED EXCEPTION DISPATCHER FUNCTIONS */
 /*--------------------------------------------------------------------------*/
@@ -135,9 +135,9 @@ void ExceptionHandler::dispatch_exception(REGS * _r) {
   /* -- EXCEPTION NUMBER */
   unsigned int exc_no = _r->int_no;
 
-  Console::puts("EXCEPTION DISPATCHER: exc_no = ");
-  Console::putui(exc_no);
-  Console::puts("\n");
+  //Console::puts("EXCEPTION DISPATCHER: exc_no = ");
+  //Console::putui(exc_no);
+  //Console::puts("\n");
 
   assert((exc_no >= 0) && (exc_no < EXCEPTION_TABLE_SIZE));
 
@@ -163,8 +163,8 @@ void ExceptionHandler::register_handler(unsigned int       _isr_code,
 
   handler_table[_isr_code] = _handler;
 
-  Console::puts("Installed exception handler at ISR "); 
-  Console::putui(_isr_code); 
+  Console::puts("Installed exception handler at ISR ");
+  Console::putui(_isr_code);
   Console::puts("\n");
 
 }
@@ -174,8 +174,8 @@ void ExceptionHandler::deregister_handler(unsigned int    _isr_code) {
 
   handler_table[_isr_code] = NULL;
 
-  Console::puts("UNINSTALLED exception handler at ISR "); 
-  Console::putui(_isr_code); 
+  Console::puts("UNINSTALLED exception handler at ISR ");
+  Console::putui(_isr_code);
   Console::puts("\n");
 
 }

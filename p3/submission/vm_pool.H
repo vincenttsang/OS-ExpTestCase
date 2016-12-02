@@ -30,13 +30,14 @@
 /*--------------------------------------------------------------------------*/
 /* DATA STRUCTURES */
 /*--------------------------------------------------------------------------*/
-typedef struct region{
-	public:
-	 	unsigned long base_address;
-		unsigned long size;
-}region;
+
 /* Forward declaration of class PageTable */
 class PageTable;
+
+struct Region{
+	unsigned long size;
+	BOOLEAN is_available;
+};
 
 /*--------------------------------------------------------------------------*/
 /* V M  P o o l  */
@@ -44,23 +45,17 @@ class PageTable;
 
 class VMPool { /* Virtual Memory Pool */
 private:
-
    /* -- DEFINE YOUR VIRTUAL MEMORY POOL DATA STRUCTURE(s) HERE. */
-	FramePool *frame_pool;
-	PageTable *page_table;
-	
-	region*  region_list;
 	unsigned long base_address;
 	unsigned long size;
-	
-	unsigned int n_regions;		// number of regions allocated now
-	unsigned int max_regions;	// the max number of regions allowed to allocate 
-
+	FramePool *frame_pool;
+	PageTable *page_table;
+	unsigned long reg_number;
 public:
-   VMPool(unsigned long base_address,
-          unsigned long size,
-          FramePool *frame_pool,
-          PageTable *page_table);
+   VMPool(unsigned long _base_address,
+          unsigned long _size,
+          FramePool *_frame_pool,
+          PageTable *_page_table);
    /* Initializes the data structures needed for the management of this
     * virtual-memory pool.
     * _base_address is the logical start address of the pool.
