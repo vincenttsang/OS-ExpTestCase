@@ -59,7 +59,7 @@
 #include "thread.H"          /* THREAD MANAGEMENT */
 
 #ifdef _USES_SCHEDULER_
-#include "Scheduler.H"
+#include "scheduler.H"
 #endif
 
 /*--------------------------------------------------------------------------*/
